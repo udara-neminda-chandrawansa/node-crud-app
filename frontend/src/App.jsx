@@ -4,10 +4,11 @@ function App() {
 
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
+  const API = "http://localhost:3000";
 
   const loadTasks = async () => {
 
-    const res = await fetch("http://localhost:3000/tasks");
+    const res = await fetch(`${API}/tasks`);
     const data = await res.json();
 
     setTasks(data);
@@ -22,7 +23,7 @@ function App() {
 
     if (!title) return;
 
-    await fetch("http://localhost:3000/tasks", {
+    await fetch(`${API}/tasks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -56,8 +57,51 @@ function App() {
 
       <ul>
         {tasks.map(task => (
-          <li key={task.id}>
+          <li key={task.id} className="flex gap-2">
             {task.title}
+
+            <input
+              value={task.title}
+              onChange={(e) => {
+                const newTasks = tasks.map(t =>
+                  t.id === task.id
+                    ? { ...t, title: e.target.value }
+                    : t
+                );
+                setTasks(newTasks);
+              }}
+            />
+
+            <button
+              onClick={async () => {
+                await fetch(`${API}/tasks/${task.id}`, {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                    title: task.title
+                  })
+                });
+
+                loadTasks();
+              }}
+            >
+              Save
+            </button>
+
+            <button
+              onClick={async () => {
+                await fetch(`${API}/tasks/${task.id}`, {
+                  method: "DELETE"
+                });
+
+                loadTasks();
+              }}
+            >
+              Delete
+            </button>
+
           </li>
         ))}
       </ul>
