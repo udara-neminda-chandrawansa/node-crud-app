@@ -1,37 +1,66 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+
+import API from "./api";
+import Login from "./components/Login";
 
 function App() {
 
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
-  const API = "http://localhost:3000";
 
+  const [token, setToken] = useState(
+    localStorage.getItem("token")
+  );
+
+  // load tasks
   const loadTasks = async () => {
 
-    const res = await fetch(`${API}/tasks`);
-    const data = await res.json();
+    try {
 
-    setTasks(data);
+      const res = await axios.get(
+        `${API}/tasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setTasks(res.data);
+
+    } catch {
+
+      console.log("Unauthorized");
+
+    }
 
   };
 
   useEffect(() => {
-    loadTasks();
-  }, []);
 
+    if (token) {
+      loadTasks();
+    }
+
+  }, [token]);
+
+  // add task
   const addTask = async () => {
 
     if (!title) return;
 
-    await fetch(`${API}/tasks`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+    await axios.post(
+      `${API}/tasks`,
+      {
         title
-      })
-    });
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     setTitle("");
 
@@ -39,16 +68,55 @@ function App() {
 
   };
 
+  // delete task
+  const deleteTask = async (id) => {
+
+    await axios.delete(
+      `${API}/tasks/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    loadTasks();
+
+  };
+
+  // logout
+  const logout = () => {
+
+    localStorage.removeItem("token");
+
+    setToken(null);
+
+  };
+
+  // show login first
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
+
   return (
     <div style={{ padding: "20px" }}>
 
       <h1>Task App</h1>
 
+      <button onClick={logout}>
+        Logout
+      </button>
+
+      <br />
+      <br />
+
       <input
         type="text"
         placeholder="Task title"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) =>
+          setTitle(e.target.value)
+        }
       />
 
       <button onClick={addTask}>
@@ -56,10 +124,12 @@ function App() {
       </button>
 
       <ul>
-        {tasks.map(task => (
-          <li key={task.id} className="flex gap-2">
-            {task.title}
 
+        {tasks.map(task => (
+
+          <li key={task.id}>
+
+            {task.title}
             <input
               value={task.title}
               onChange={(e) => {
@@ -89,25 +159,23 @@ function App() {
             >
               Save
             </button>
-
             <button
-              onClick={async () => {
-                await fetch(`${API}/tasks/${task.id}`, {
-                  method: "DELETE"
-                });
-
-                loadTasks();
-              }}
+              onClick={() =>
+                deleteTask(task.id)
+              }
             >
               Delete
             </button>
 
           </li>
+
         ))}
+
       </ul>
 
     </div>
   );
+
 }
 
 export default App;
