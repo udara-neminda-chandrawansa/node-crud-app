@@ -3,11 +3,14 @@ import axios from "axios";
 
 import API from "./api";
 import Login from "./components/Login";
+import Register from "./components/Register";
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [username] = useState(localStorage.getItem("username"));
+  const [mode, setMode] = useState("login"); // login | register
 
   const loadTasks = async () => {
     try {
@@ -56,7 +59,24 @@ function App() {
     setToken(null);
   };
 
-  if (!token) return <Login setToken={setToken} />;
+  if (!token) {
+    if (mode === "login") {
+
+      return (
+        <Login
+          setToken={setToken}
+          onSwitch={() => setMode("register")}
+        />
+      );
+
+    }
+
+    return (
+      <Register
+        onSwitch={() => setMode("login")}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-stone-50 font-sans">
@@ -65,7 +85,7 @@ function App() {
         <div className="flex items-center gap-2">
           <span className="text-xl">✅</span>
           <h1 className="text-lg font-semibold text-stone-800 tracking-tight">
-            Tasks
+            Tasks | {username}
           </h1>
         </div>
         <button

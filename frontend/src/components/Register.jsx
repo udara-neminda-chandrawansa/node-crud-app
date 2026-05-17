@@ -2,21 +2,20 @@ import { useState } from "react";
 import axios from "axios";
 import API from "../api";
 
-function Login({ setToken, onSwitch }) {
+function Register({ onSwitch }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const login = async () => {
+  const register = async () => {
     setError("");
     try {
-      const res = await axios.post(`${API}/auth/login`, { username, password });
-      const token = res.data.token;
-      localStorage.setItem("token", token);
-      localStorage.setItem("username", username);
-      setToken(token);
-    } catch {
-      setError("Invalid username or password.");
+      await axios.post(`${API}/auth/register`, { username, password });
+      setSuccess(true);
+      setTimeout(() => onSwitch(), 1500);
+    } catch (err) {
+      setError("Registration failed. Try a different username.");
     }
   };
 
@@ -29,7 +28,7 @@ function Login({ setToken, onSwitch }) {
           <h1 className="mt-2 text-lg font-semibold text-stone-800 tracking-tight">
             Tasks
           </h1>
-          <p className="text-sm text-stone-400 mt-1">Sign in to continue</p>
+          <p className="text-sm text-stone-400 mt-1">Create an account</p>
         </div>
 
         {/* Card */}
@@ -40,7 +39,7 @@ function Login({ setToken, onSwitch }) {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && login()}
+              onKeyDown={(e) => e.key === "Enter" && register()}
               className="w-full px-4 py-2.5 rounded-lg border border-stone-200 bg-stone-50 text-stone-800 placeholder-stone-400 text-sm focus:outline-none focus:ring-2 focus:ring-stone-300 transition"
             />
             <input
@@ -48,7 +47,7 @@ function Login({ setToken, onSwitch }) {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && login()}
+              onKeyDown={(e) => e.key === "Enter" && register()}
               className="w-full px-4 py-2.5 rounded-lg border border-stone-200 bg-stone-50 text-stone-800 placeholder-stone-400 text-sm focus:outline-none focus:ring-2 focus:ring-stone-300 transition"
             />
           </div>
@@ -57,19 +56,26 @@ function Login({ setToken, onSwitch }) {
             <p className="text-xs text-red-500 text-center">{error}</p>
           )}
 
+          {success && (
+            <p className="text-xs text-emerald-600 text-center">
+              Account created! Redirecting…
+            </p>
+          )}
+
           <button
-            onClick={login}
+            onClick={register}
             className="w-full py-2.5 bg-stone-800 text-white text-sm font-medium rounded-lg hover:bg-stone-700 active:scale-95 transition-all"
           >
-            Sign in
+            Create account
           </button>
-          <p className="text-center text-xs text-stone-400" style={{ cursor: "pointer" }}>
-            No account?{" "}
+
+          <p className="text-center text-xs text-stone-400">
+            Already have an account?{" "}
             <button
               onClick={onSwitch}
               className="text-stone-600 hover:text-stone-800 underline underline-offset-2 transition-colors"
             >
-              Register
+              Sign in
             </button>
           </p>
         </div>
@@ -78,4 +84,4 @@ function Login({ setToken, onSwitch }) {
   );
 }
 
-export default Login;
+export default Register;
