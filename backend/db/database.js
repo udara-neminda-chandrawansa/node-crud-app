@@ -1,6 +1,16 @@
 const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+const fs = require("fs");
+const os = require("os");
 
-const db = new sqlite3.Database("./database.db", (err) => {
+// Use a writable directory: $HOME/.crud-app/
+const dataDir = path.join(os.homedir(), ".crud-app");
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
+const dbPath = path.join(dataDir, "database.db");
+
+const db = new sqlite3.Database(dbPath, (err) => {
 
     if (err) {
         console.log(err.message);
