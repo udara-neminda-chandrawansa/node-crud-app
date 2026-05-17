@@ -84,6 +84,25 @@ function App() {
 
   };
 
+  // update task
+  const updateTask = async (task) => {
+
+    await axios.put(
+      `${API}/tasks/${task.id}`,
+      {
+        title: task.title
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    loadTasks();
+
+  };
+
   // logout
   const logout = () => {
 
@@ -133,30 +152,26 @@ function App() {
             <input
               value={task.title}
               onChange={(e) => {
-                const newTasks = tasks.map(t =>
-                  t.id === task.id
-                    ? { ...t, title: e.target.value }
-                    : t
-                );
-                setTasks(newTasks);
+
+                const updatedTasks = tasks.map(t => {
+
+                  if (t.id === task.id) {
+                    return {
+                      ...t,
+                      title: e.target.value
+                    };
+                  }
+
+                  return t;
+
+                });
+
+                setTasks(updatedTasks);
+
               }}
             />
 
-            <button
-              onClick={async () => {
-                await fetch(`${API}/tasks/${task.id}`, {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                    title: task.title
-                  })
-                });
-
-                loadTasks();
-              }}
-            >
+            <button onClick={() => updateTask(task)}>
               Save
             </button>
             <button
