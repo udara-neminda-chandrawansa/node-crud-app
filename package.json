@@ -30,10 +30,9 @@
     "yauzl": "^2.10.0"
   },
   "scripts": {
-    "frontend": "cd frontend && npm run dev",
     "backend": "cd backend && npm run dev",
-    "electron": "electron electron/main.js",
-    "desktop": "concurrently \"npm run backend\" \"npm run frontend\" \"wait-on http://localhost:5173 && npm run electron\""
+    "frontend": "cd frontend && npm run dev",
+    "desktop": "concurrently \"npm run backend\" \"npm run frontend\" \"wait-on http://localhost:5173 && electron electron/main.js\""
   },
   "repository": {
     "type": "git",

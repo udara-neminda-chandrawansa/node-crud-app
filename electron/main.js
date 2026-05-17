@@ -1,4 +1,6 @@
 const { app, BrowserWindow } = require("electron");
+const path = require("path");
+const startBackend = require("./startBackend");
 
 function createWindow() {
 
@@ -12,10 +14,16 @@ function createWindow() {
         }
     });
 
-    win.loadURL("http://localhost:5173");
+    win.loadFile(
+        path.join(__dirname, "../frontend/dist/index.html")
+    );
 
+    win.webContents.setWindowOpenHandler(() => {
+        return { action: "deny" };
+    });
 }
 
 app.whenReady().then(() => {
+    startBackend(); // starts Express automatically
     createWindow();
 });
