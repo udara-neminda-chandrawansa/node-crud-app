@@ -1,0 +1,50 @@
+{
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "electron": "^42.1.0",
+    "wait-on": "^9.0.10"
+  },
+  "name": "crud-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "buffer-crc32": "^0.2.13",
+    "debug": "^4.4.3",
+    "end-of-stream": "^1.4.5",
+    "env-paths": "^3.0.0",
+    "extract-zip": "^2.0.1",
+    "fd-slicer": "^1.1.0",
+    "get-stream": "^5.2.0",
+    "graceful-fs": "^4.2.11",
+    "ms": "^2.1.3",
+    "once": "^1.4.0",
+    "pend": "^1.2.0",
+    "progress": "^2.0.3",
+    "pump": "^3.0.4",
+    "semver": "^7.8.0",
+    "sumchecker": "^3.0.1",
+    "undici": "^7.25.0",
+    "undici-types": "^7.16.0",
+    "wrappy": "^1.0.2",
+    "yauzl": "^2.10.0"
+  },
+  "scripts": {
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && npm run dev",
+    "electron": "electron electron/main.js",
+    "desktop": "concurrently \"npm run backend\" \"npm run frontend\" \"wait-on http://localhost:5173 && npm run electron\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/udara-neminda-chandrawansa/node-crud-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/udara-neminda-chandrawansa/node-crud-app/issues"
+  },
+  "homepage": "https://github.com/udara-neminda-chandrawansa/node-crud-app#readme"
+}
