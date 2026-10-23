@@ -13,7 +13,6 @@
     "debug": "^4.4.3",
     "end-of-stream": "^1.4.5",
     "env-paths": "^3.0.0",
-    "extract-zip": "^2.0.1",
     "fd-slicer": "^1.1.0",
     "get-stream": "^5.2.0",
     "graceful-fs": "^4.2.11",
